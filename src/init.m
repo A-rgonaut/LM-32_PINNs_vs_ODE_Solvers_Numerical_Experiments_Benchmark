@@ -158,7 +158,7 @@ function init()
     mse_pinn_test = mean((Yp_pinn_test - test_set.y).^2, 'all');
     mse_ode_test  = mean((Yp_ode_test  - test_set.y).^2, 'all');
 
-    %% Results
+    %% ---- Results ----
 
     fprintf('\nMSE vs dataset (%s):\n', sys.name);
     fprintf('  TRAIN (%.0f%%):  PINN = %.3e   |   ODE = %.3e   --> %s\n', ...
@@ -172,7 +172,7 @@ function init()
             mse_ode_test, ...
             ternary(mse_pinn_test, mse_ode_test));
     
-    % ---- Plot: dataset vs ODE vs PINN (state 1) ----
+    % plot: dataset vs ODE vs PINN
     figure('Color','w'); 
     tiledlayout(max(2, min(3,D)), 1, 'TileSpacing','compact');
     K = min(D, 3);  % plot max 3 panels
@@ -209,12 +209,12 @@ function init()
         legend('Location','bestoutside');
     end
     
-    % ---- Plot training loss ----
+    % plot training loss
     figure('Color','w');
     plot(hist.epoch, hist.loss, 'LineWidth', 1.5); grid on;
     xlabel('epoch'); ylabel('loss'); title('PINN training loss (TRAIN set)');
     
-    % ---- Summary ----
+    % summary 
     fprintf('Summary:\n');
     fprintf('  System: %s\n', sys.name);
     fprintf('  Points: Ntrain = %d, Ntest = %d, state dim = %d\n', ...
@@ -231,7 +231,7 @@ function init()
             ternary(mse_pinn_test, mse_ode_test));
 end
     
-%% Utils
+%% ---- Utils ----
 
 function [train_set, test_set] = split_train_test(t, y, train_ratio, mode)
     % split_train_test  (chronological) return struct with params t, y

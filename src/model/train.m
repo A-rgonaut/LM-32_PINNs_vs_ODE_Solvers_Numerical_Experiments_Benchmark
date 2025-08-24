@@ -1,19 +1,23 @@
 function [net, hist] = train(net, sys, tspan, ic, cfg, data)
-% TRAIN  PINN training loop (mini-batch, momentum, gradient clipping).
-%
-% [net, hist] = TRAIN(net, sys, [t0 t1], ic, cfg, data)
-%
-% ic: struct with fields .t0 (scalar), .y0 (D x 1)
-%
-% cfg fields:
-%   .epochs        (default 2000)
-%   .batch_size    (default 128)
-%   .collocation_N (default 4096)
-%   .seed          (default 42)
-%   .lr            (default 1e-3)
-%   .momentum      (default 0.9)
-%   .grad_clip     (default 5.0; 0 disables)
-%   .loss_weights  (struct with fields: lambda_res=1, lambda_ic=1, lambda_data=0)
+    %% ---- Documentation ----
+
+    % TRAIN  PINN training loop (mini-batch, momentum, gradient clipping).
+    %
+    % [net, hist] = TRAIN(net, sys, [t0 t1], ic, cfg, data)
+    %
+    % ic: struct with fields .t0 (scalar), .y0 (D x 1)
+    %
+    % cfg fields:
+    %   .epochs        (default 2000)
+    %   .batch_size    (default 128)
+    %   .collocation_N (default 4096)
+    %   .seed          (default 42)
+    %   .lr            (default 1e-3)
+    %   .momentum      (default 0.9)
+    %   .grad_clip     (default 5.0; 0 disables)
+    %   .loss_weights  (struct with fields: lambda_res=1, lambda_ic=1, lambda_data=0)
+
+    %% ---- Train ----
 
     if nargin < 6, data = []; end
     if nargin < 5, cfg = struct(); end
@@ -37,6 +41,7 @@ function [net, hist] = train(net, sys, tspan, ic, cfg, data)
     % ---- momentum buffers ----
     vel = struct();
     fn = fieldnames(net.params);
+
     for k = 1:numel(fn)
         vel.(fn{k}) = zeros(size(net.params.(fn{k})), 'like', net.params.(fn{k}));
     end
@@ -106,7 +111,7 @@ function [net, hist] = train(net, sys, tspan, ic, cfg, data)
     end
 end
 
-% ------ small local helper (same pattern as in model.m) ------
+%% ---- Utils ----
 
 function [L, terms, grads] = loss_and_grads_fn(net, sys, t0, y0, t_batch, loss_weights, data)
     [L, terms] = losses(net, sys, t0, y0, t_batch, loss_weights, data);
