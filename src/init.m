@@ -1,7 +1,7 @@
 function init()
     %% ---- Documentation ----
 
-    % DEMO_WITH_DATA  Train a PINN with real/synthetic dataset and compare
+    % INIT/DEMO  Train a PINN with real/synthetic dataset and compare
     % ODE vs PINN accuracy on the same data points.
     %
     % Dataset format (CSV) expected by default:
