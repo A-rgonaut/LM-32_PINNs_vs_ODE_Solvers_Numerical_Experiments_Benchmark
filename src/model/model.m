@@ -50,17 +50,7 @@ function net = model(cfg)
     net.init = @(scale) setfield(net, 'params', init_params(cfg, scale, cfg.dtype)); 
 end
     
-%% ---- utils ----
-function cfg = fill_defaults(cfg, defaults)
-    fn = fieldnames(defaults);
-
-    for k = 1:numel(fn)
-        f = fn{k};
-        if ~isfield(cfg, f) || isempty(cfg.(f))
-            cfg.(f) = defaults.(f);
-        end
-    end
-end
+%% ---- Utils ----
 
 function params = init_params(cfg, scale, dtype)
     sizes = [cfg.input_dim, cfg.hidden_sizes, cfg.output_dim];

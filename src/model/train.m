@@ -117,13 +117,3 @@ function [L, terms, grads] = loss_and_grads_fn(net, sys, t0, y0, t_batch, loss_w
     [L, terms] = losses(net, sys, t0, y0, t_batch, loss_weights, data);
     grads = dlgradient(L, net.params);
 end
-
-function cfg = fill_defaults(cfg, defaults)
-    fn = fieldnames(defaults);
-    for k = 1:numel(fn)
-        f = fn{k};
-        if ~isfield(cfg, f) || isempty(cfg.(f))
-            cfg.(f) = defaults.(f);
-        end
-    end
-end
