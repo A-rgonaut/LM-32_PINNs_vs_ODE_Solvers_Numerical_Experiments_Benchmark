@@ -18,7 +18,7 @@ function net = model(cfg)
     %   - Vectorized over columns (each column is a sample).
     
     %% ---- Model ----
-
+ 
     if nargin < 1 || isempty(cfg), cfg = struct(); end
     cfg = fill_defaults(cfg, struct( ...
         'input_dim',    1, ...

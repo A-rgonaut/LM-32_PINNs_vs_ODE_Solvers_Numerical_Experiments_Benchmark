@@ -17,7 +17,7 @@ function [L, terms] = losses(net, sys, t0, y0, t_col, cfg, data)
     %   terms  : struct with fields res, ic, data
     
     %% ---- Losses ----
-
+ 
     % defaults
     if nargin < 6 || isempty(cfg), cfg = struct; end
     if ~isfield(cfg,'lambda_res'),  cfg.lambda_res  = 1.0; end

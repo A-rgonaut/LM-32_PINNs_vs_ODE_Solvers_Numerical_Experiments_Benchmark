@@ -110,7 +110,7 @@ function [net, hist] = train(net, sys, tspan, ic, cfg, data)
         end
     end
 end
-
+ 
 %% ---- Utils ----
 
 function [L, terms, grads] = loss_and_grads_fn(net, sys, t0, y0, t_batch, loss_weights, data)

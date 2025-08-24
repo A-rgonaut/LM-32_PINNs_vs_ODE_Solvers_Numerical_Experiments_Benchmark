@@ -17,7 +17,7 @@ function [R, dYdt, Y] = residual(net, sys, t, mode)
     %   sum(Y(i,:)) wrt t (vector). This yields a 1xN gradient with entries
     %   dY(i,j)/dt_j under the assumption that sample j depends only on t_j,
     %   which holds for our vectorized, column-wise network.
-    
+     
     %% ---- Residual ----
     
     if nargin < 4, mode = 'eval'; end

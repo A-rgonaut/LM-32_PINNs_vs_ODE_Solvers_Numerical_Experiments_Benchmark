@@ -4,7 +4,7 @@ function [tgrid, Ypred] = evaluate(net, tspan, N)
     % EVALUATE  Evaluate PINN on a uniform grid for plotting.
     % [tgrid, Ypred] = EVALUATE(net, [t0 t1], N)
     %   returns tgrid (1xN double), Ypred (D x N double).
-
+ 
     %% ---- Evaluate ----
 
     if nargin < 3, N = 1001; end

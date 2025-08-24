@@ -1,6 +1,6 @@
 function t_col = collocation(tspan, N, mode, seed)
     %% ---- Documentation ----
-    
+     
     % COLLOCATION  Generate collocation time points.
     %
     % t_col = COLLOCATION([t0 t1], N, mode, seed)
