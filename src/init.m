@@ -26,7 +26,7 @@ function init()
     %% ---- Solver -----
     
     % 'runge_kutta' | 'cranck_nicolson' | 'leapfrog' | ...
-    which_solv  = "leapfrog";        
+    which_solv  = "runge_kutta";        
     
     switch lower(which_solv)
         case 'euler_explicit',  solv = @euler_explicit;
@@ -77,9 +77,9 @@ function init()
     train_cfg.collocation_N = 4096;
     train_cfg.seed          = 42;
     train_cfg.lr            = 1e-3;
-    train_cfg.momentum      = 0.9;
+    train_cfg.momentum      = 0.75; % 0.9
     train_cfg.grad_clip     = 5.0;
-    train_cfg.loss_weights  = struct('lambda_res',1,'lambda_ic',1,'lambda_data',1);
+    train_cfg.loss_weights  = struct('lambda_res',1,'lambda_ic',1,'lambda_data',50);
 
     %% ---- Dataset ----
 
