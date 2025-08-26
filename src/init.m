@@ -131,7 +131,7 @@ function init()
     data_train.t = dlarray(train_set.t);   % 1 x Ntr
     data_train.y = dlarray(train_set.y);   % D x Ntr
 
-    %% ---- Training and test PINN ----
+    %% ---- Training and Testing PINN ----
 
     % build PINN 
     net = model(net_cfg);
