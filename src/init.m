@@ -40,7 +40,7 @@ function init()
     %% ---- System -----
     
     % 'hooke' | 'harmonic' | 'double_pendulum' | ...
-    which_sys  = "blasius";        
+    which_sys  = "hooke";        
     
     switch lower(which_sys)
         case 'hooke',           sys = hooke([]);
@@ -67,26 +67,26 @@ function init()
     net_cfg = struct('input_dim',1,...
                      'output_dim',D,...
                      'hidden_sizes',[100 100 100], ...
-                     'activation','relu', ...
+                     'activation','tanh', ...
                      'dropout',0.0, ...
                      'dtype','single');
     
     % PINN train config 
     train_cfg = struct();
     train_cfg.epochs        = 1500;
-    train_cfg.batch_size    = 512;
-    train_cfg.collocation_N = 4096;
+    train_cfg.batch_size    = 8192;
+    train_cfg.collocation_N = 8192;
     train_cfg.seed          = 42;
-    train_cfg.lr            = 1e-2;
+    train_cfg.lr            = 1e-1;
     train_cfg.momentum      = 0.9;  % 0.9
-    train_cfg.grad_clip     = 5.0;  %5.0
-    train_cfg.loss_weights  = struct('lambda_res',0.5,'lambda_ic',1,'lambda_data',0.5);
+    train_cfg.grad_clip     = 0.5;  %5.0
+    train_cfg.loss_weights  = struct('lambda_res',0.1,'lambda_ic',0.1,'lambda_data',0.8);
     train_cfg.optimizer     = 'sgd'; % 'sgd' | 'adam' 
     train_cfg.beta1         = 0.9;
     train_cfg.beta2         = 0.999;
     train_cfg.eps           = 1e-8;
-    train_cfg.lr_decay      = [];   % scheduler
-    train_cfg.decay_every   = [];   % ogni 50 epoche: lr *= 0.98
+    train_cfg.lr_decay      = [0.98];   % scheduler
+    train_cfg.decay_every   = [200];   % ogni 50 epoche: lr *= 0.98
 
     %% ---- Dataset ----
 
@@ -94,7 +94,7 @@ function init()
     % - csv_path, "" for synthetic
     % - noise_std, std for synthetic noise (ignored if csv provided)
     % - ode_step_h, step for synthetic ground-truth ODE  
-    csv_path   = "lorenz_dataset_1.csv";
+    csv_path   = "unknow_dataset_4.csv";
     noise_std  = 0; % 0.02 
     ode_step_h = 1e-3;
 
