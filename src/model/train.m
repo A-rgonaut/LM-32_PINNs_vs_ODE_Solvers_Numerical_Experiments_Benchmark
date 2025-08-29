@@ -148,6 +148,7 @@ function [net, hist] = train(net, sys, tspan, ic, cfg, data)
             ep_data = ep_data + double(gather(extractdata(terms.data)));
         end
     
+        hist.epoch(ep) = ep;
         hist.loss(ep)  = ep_loss / num_batches;
         hist.res(ep)   = ep_res  / num_batches;
         hist.ic(ep)    = ep_ic   / num_batches;
