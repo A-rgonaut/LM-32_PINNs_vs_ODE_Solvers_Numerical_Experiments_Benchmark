@@ -68,18 +68,18 @@ end
 %% ---- Utils ----    
 
 function dydt = rhs_three_body(~, y, G, m, eps)
-% y: 12xN -> split into r1,v1,r2,v2,r3,v3 (each 2xN)
-N  = size(y, 2);
-r1 = y(1:2,    :); v1 = y(3:4,    :);
-r2 = y(5:6,    :); v2 = y(7:8,    :);
-r3 = y(9:10,   :); v3 = y(11:12,  :);
-
-[a1, a2, a3] = pairwise_acc(r1, r2, r3, G, m, eps);
-
-dydt = zeros(12, N, 'like', y);
-dydt(1:2,   :) = v1;  dydt(3:4,   :) = a1;
-dydt(5:6,   :) = v2;  dydt(7:8,   :) = a2;
-dydt(9:10,  :) = v3;  dydt(11:12, :) = a3;
+    % y: 12xN -> split into r1,v1,r2,v2,r3,v3 (each 2xN)
+    N  = size(y, 2);
+    r1 = y(1:2,    :); v1 = y(3:4,    :);
+    r2 = y(5:6,    :); v2 = y(7:8,    :);
+    r3 = y(9:10,   :); v3 = y(11:12,  :);
+    
+    [a1, a2, a3] = pairwise_acc(r1, r2, r3, G, m, eps);
+    
+    dydt = zeros(12, N, 'like', y);
+    dydt(1:2,   :) = v1;  dydt(3:4,   :) = a1;
+    dydt(5:6,   :) = v2;  dydt(7:8,   :) = a2;
+    dydt(9:10,  :) = v3;  dydt(11:12, :) = a3;
 end
 
 function A = acc_three_body(~, x, v, G, m, eps) %#ok<INUSD>
