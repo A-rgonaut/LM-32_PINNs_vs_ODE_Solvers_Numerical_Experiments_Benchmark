@@ -49,6 +49,7 @@ function init()
         case 'van_der_pol',     sys = van_der_pol([]);
         case 'three_body',      sys = three_body([]);
         case 'blasius',         sys = blasius([]);
+        case 'lorenz',          sys = lorenz([]);
         case 'jerk',            sys = jerk([]);
         otherwise, error('Unknown system "%s"', which_sys);
     end
@@ -65,7 +66,7 @@ function init()
     % PINN build config
     net_cfg = struct('input_dim',1,...
                      'output_dim',D,...
-                     'hidden_sizes',[32 32 32], ...
+                     'hidden_sizes',[100 100 100], ...
                      'activation','relu', ...
                      'dropout',0.0, ...
                      'dtype','single');
@@ -73,13 +74,19 @@ function init()
     % PINN train config 
     train_cfg = struct();
     train_cfg.epochs        = 1500;
-    train_cfg.batch_size    = 256;
+    train_cfg.batch_size    = 512;
     train_cfg.collocation_N = 4096;
     train_cfg.seed          = 42;
-    train_cfg.lr            = 1e-3;
-    train_cfg.momentum      = 0.75; % 0.9
-    train_cfg.grad_clip     = 5.0;
-    train_cfg.loss_weights  = struct('lambda_res',1,'lambda_ic',1,'lambda_data',50);
+    train_cfg.lr            = 1e-2;
+    train_cfg.momentum      = 0.9;  % 0.9
+    train_cfg.grad_clip     = 5.0;  %5.0
+    train_cfg.loss_weights  = struct('lambda_res',0.5,'lambda_ic',1,'lambda_data',0.5);
+    train_cfg.optimizer     = 'sgd'; % 'sgd' | 'adam' 
+    train_cfg.beta1         = 0.9;
+    train_cfg.beta2         = 0.999;
+    train_cfg.eps           = 1e-8;
+    train_cfg.lr_decay      = [];   % scheduler
+    train_cfg.decay_every   = [];   % ogni 50 epoche: lr *= 0.98
 
     %% ---- Dataset ----
 
@@ -87,8 +94,8 @@ function init()
     % - csv_path, "" for synthetic
     % - noise_std, std for synthetic noise (ignored if csv provided)
     % - ode_step_h, step for synthetic ground-truth ODE  
-    csv_path   = "lorenz_2.csv";
-    noise_std  = 0.02;
+    csv_path   = "lorenz_dataset_1.csv";
+    noise_std  = 0; % 0.02 
     ode_step_h = 1e-3;
 
     % split (train 90%, test 10%) — chronological mode for time series
@@ -151,26 +158,18 @@ function init()
     Yp_ode_train = solv(sys.f, train_set.t, y0);   % D x Ntr
     Yp_ode_test  = solv(sys.f, test_set.t,  y0);   % D x Nte
     
-    % MSE metrics 
-    mse_pinn_train = mean((Yp_pinn_train - train_set.y).^2, 'all');
-    mse_ode_train  = mean((Yp_ode_train  - train_set.y).^2, 'all');
-    
-    mse_pinn_test = mean((Yp_pinn_test - test_set.y).^2, 'all');
-    mse_ode_test  = mean((Yp_ode_test  - test_set.y).^2, 'all');
+    % metrics 
+    fprintf('\nSystem: (%s)\n', sys.name);
+
+    fprintf('\n== Metrics TRAIN (%.0f%%) ==\n', 100*(train_ratio));
+    train_metrics = get_metrics(Yp_pinn_train, Yp_ode_train, train_set.y);
+    fprintf('--> %s wins \n', ternary(train_metrics{'PINN','MSE'}, train_metrics{'ODE','MSE'}));
+
+    fprintf('\n== Metrics TEST (%.0f%%) ==\n', 100*(1-train_ratio));
+    test_metrics = get_metrics(Yp_pinn_test, Yp_ode_test, test_set.y);
+    fprintf('---> %s wins \n', ternary(test_metrics{'PINN','MSE'}, test_metrics{'ODE','MSE'}));
 
     %% ---- Results ----
-
-    fprintf('\nMSE vs dataset (%s):\n', sys.name);
-    fprintf('  TRAIN (%.0f%%):  PINN = %.3e   |   ODE = %.3e   --> %s\n', ...
-            100*train_ratio, ...
-            mse_pinn_train, ...
-            mse_ode_train, ...
-            ternary(mse_pinn_train, mse_ode_train));
-    fprintf('  TEST  (%.0f%%):  PINN = %.3e   |   ODE = %.3e   --> %s\n\n', ...
-            100*(1-train_ratio), ...
-            mse_pinn_test, ...
-            mse_ode_test, ...
-            ternary(mse_pinn_test, mse_ode_test));
     
     % plot: dataset vs ODE vs PINN
     figure('Color','w'); 
@@ -215,7 +214,7 @@ function init()
     xlabel('epoch'); ylabel('loss'); title('PINN training loss (TRAIN set)');
     
     % summary 
-    fprintf('Summary:\n');
+    fprintf('\n== Summary ==\n');
     fprintf('  System: %s\n', sys.name);
     fprintf('  Points: Ntrain = %d, Ntest = %d, state dim = %d\n', ...
             numel(train_set.t), ...
@@ -226,9 +225,9 @@ function init()
             train_cfg.loss_weights.lambda_ic, ...
             train_cfg.loss_weights.lambda_data);
     fprintf('  MSE(PINN)=%.3e  MSE(ODE)=%.3e  --> %s wins.\n\n', ...
-            mse_pinn_test, ...
-            mse_ode_test, ...
-            ternary(mse_pinn_test, mse_ode_test));
+            test_metrics{'PINN','MSE'}, ...
+            test_metrics{'ODE','MSE'}, ...
+            ternary(test_metrics{'PINN','MSE'}, test_metrics{'ODE','MSE'}));
 end
     
 %% ---- Utils ----
