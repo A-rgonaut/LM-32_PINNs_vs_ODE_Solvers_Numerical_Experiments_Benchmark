@@ -74,8 +74,8 @@ function init()
     % PINN train config 
     train_cfg = struct();
     train_cfg.epochs        = 5000;
-    train_cfg.batch_size    = 8192; %min(2048, size(data_train.t,2));
-    train_cfg.collocation_N = 0;
+    train_cfg.batch_size    = 2048; %min(2048, size(data_train.t,2));
+    train_cfg.collocation_N = 8192;
     train_cfg.seed          = 421;
     train_cfg.lr            = 2e-1;
     train_cfg.momentum      = 0.9;  % 0.9
