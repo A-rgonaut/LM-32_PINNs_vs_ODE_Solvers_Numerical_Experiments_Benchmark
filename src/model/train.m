@@ -154,7 +154,7 @@ function [net, hist] = train(net, sys, tspan, ic, cfg, data)
         hist.ic(ep)    = ep_ic   / num_batches;
         hist.data(ep)  = ep_data / num_batches;
 
-        print_every = 50;
+        print_every = 100;
 
         % metrics on full TRAIN data 
         do_metrics = isstruct(data) && ...
