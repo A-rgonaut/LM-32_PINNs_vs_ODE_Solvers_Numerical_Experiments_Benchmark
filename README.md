@@ -2,7 +2,7 @@
 
 ![MATLAB](https://img.shields.io/badge/MATLAB-red?style=for-the-badge)
 
-> Implementation of a Physically Informed Neural Network (PIN) from scratch, compared with ODE methods, for the resolution of chaotic systems using MATLAB ambience.
+> Implementation of a Physically Informed Neural Network (PINN) from scratch, compared with ODE methods, for the resolution of chaotic systems using MATLAB ambience.
 
 ## 📖 **Context**
 
