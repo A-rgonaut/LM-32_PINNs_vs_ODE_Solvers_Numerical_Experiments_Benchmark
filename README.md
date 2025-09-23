@@ -14,7 +14,7 @@ _Andrea Spinelli_
 ## 🛠️ **Technologies Used**
 
 *   **Languages:** MATLAB
-*   **Frameworks/Libraries:** Deep Learnign Toolbox
+*   **Frameworks/Libraries:** Deep Learning Toolbox
 *   **Other:** Git
 
 ## 🚀 **Installation and Startup**
